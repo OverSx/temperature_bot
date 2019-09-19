@@ -18,10 +18,6 @@ ser.open()              #Открытие порта
 ser.flushInput()        #Очищает входной буффер
 ser.flushOutput()       #Очищает выходной буффер
 
-
-
-
-
 mybot = telebot.TeleBot(token)
 
 @mybot.message_handler(commands = ["start"])
@@ -36,8 +32,8 @@ def sensor_1(message):
 
 if __name__ == '__main__':
         mybot.polling(none_stop=True)
-        temp = ser.readline()
-        temp_json = json.loads(temp)
-        table_filling(temp_json)
+        tempInfo_json = ser.readline()
+        tempInfo = json.loads(tempInfo_json)
+        table_filling(tempInfo)
         
 
