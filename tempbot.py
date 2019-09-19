@@ -4,6 +4,9 @@ import serial
 import json 
 import datetime
 from dBase import table_filling
+from dBase import DataBase
+from dBase import get_value_temp
+
 
 token = '667664175:AAHCAROr2MNqs-J-dv2otjDM6nlgPtBiZDE'
 
@@ -19,6 +22,7 @@ ser.flushInput()        #Очищает входной буффер
 ser.flushOutput()       #Очищает выходной буффер
 
 mybot = telebot.TeleBot(token)
+DataBase()
 
 @mybot.message_handler(commands = ["start"])
 def start(message):
@@ -26,7 +30,11 @@ def start(message):
 
 @mybot.message_handler(commands = ["sensor 1"])
 def sensor_1(message):
-        mybot.send_message(message, "asdas")
+        mybot.send_message(message, get_value_temp(1))
+
+@mybot.message_handler(commands = ["sensor 2"])
+def sensor_2(message):
+        mybot.send_message(message, get_value_temp(2))
 
     
 
