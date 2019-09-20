@@ -1,8 +1,9 @@
-import config
-import telebot
+from telegram.ext import Updater
+from telegram.ext import CommandHandler
 import serial
 import json 
 import datetime
+from threading import Thread
 from dBase import table_filling
 from dBase import DataBase
 from dBase import get_value_temp
@@ -21,27 +22,47 @@ ser.open()              #Открытие порта
 ser.flushInput()        #Очищает входной буффер
 ser.flushOutput()       #Очищает выходной буффер
 
-mybot = telebot.TeleBot(token)
+#Создание базы данных
 DataBase()
 
-@mybot.message_handler(commands = ["start"])
-def start(message):
-        mybot.send_message(message, "Hello! I really appreciate your choice! \nUse buttons below!")
 
-@mybot.message_handler(commands = ["sensor 1"])
-def sensor_1(message):
-        mybot.send_message(message, get_value_temp(1))
+#############################################
+#       Функции, вызываемые командами       #
+#############################################
 
-@mybot.message_handler(commands = ["sensor 2"])
-def sensor_2(message):
-        mybot.send_message(message, get_value_temp(2))
+def start(update, context):
+        context.bot.send_message(chat_id = update.message.chat_id, text = "Hello! I really appreciate your choice! \nUse buttons below!")
 
-    
+def sensor_1(update, context):
+        context.bot.send_message(chat_id = update.message.chat_id, text = get_value_temp(1))
+
+def sensor_2(update, context):
+        context.bot.send_message(chat_id = update.message.chat_id, text = get_value_temp(2))
+
+def die(updater):
+         updater.start_polling()
+         exit(0)
+
+def main():
+        updater = Updater(token, use_context=True)
+        dispatcher = updater.dispatcher
+
+        dispatcher.add_handler(CommandHandler('start', start))
+        dispatcher.add_handler(CommandHandler('sensor1', sensor_1))
+        dispatcher.add_handler(CommandHandler('sensor2', sensor_2))
+
+
+        while True:
+                try:
+                        updater.start_polling()
+                        tempInfo_json = ser.readline()
+                        tempInfo = json.loads(tempInfo_json)
+                        table_filling(tempInfo)
+                except:
+                        die(updater)
+
 
 if __name__ == '__main__':
-        mybot.polling(none_stop=True)
-        tempInfo_json = ser.readline()
-        tempInfo = json.loads(tempInfo_json)
-        table_filling(tempInfo)
+        main()
         
 
