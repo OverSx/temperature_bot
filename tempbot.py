@@ -11,19 +11,25 @@ from dBase import get_value_temp
 
 token = '667664175:AAHCAROr2MNqs-J-dv2otjDM6nlgPtBiZDE'
 
-#Работа с COM-портом
-ser = serial.Serial()
-#Установка параметров COM-порта
-ser.baudrate = 9600     #Скорость   
-ser.port = 'COM14'      #Порт
-ser.timeout = None      #Время, по истечении которого остановится чтение из порта
-ser.open()              #Открытие порта 
+try:
+        #Работа с COM-портом
+        ser = serial.Serial()
+        #Установка параметров COM-порта
+        ser.baudrate = 9600     #Скорость   
+        ser.port = 'COM14'      #Порт
+        ser.timeout = None      #Время, по истечении которого остановится чтение из порта
+        ser.open()              #Открытие порта 
 
-ser.flushInput()        #Очищает входной буффер
-ser.flushOutput()       #Очищает выходной буффер
+        ser.flushInput()        #Очищает входной буффер
+        ser.flushOutput()       #Очищает выходной буффер
+except Exception as e:
+        print(e)
 
 #Создание базы данных
-DataBase()
+try:
+        DataBase()
+except Exception as e:
+        print(e)
 
 
 #############################################
@@ -31,7 +37,7 @@ DataBase()
 #############################################
 
 def start(update, context):
-        context.bot.send_message(chat_id = update.message.chat_id, text = "Hello! I really appreciate your choice! \nUse buttons below!")
+        context.bot.send_message(chat_id = update.message.chat_id, text = "Hello! \nUse buttons below!")
 
 def sensor_1(update, context):
         context.bot.send_message(chat_id = update.message.chat_id, text = get_value_temp(1))
@@ -40,8 +46,8 @@ def sensor_2(update, context):
         context.bot.send_message(chat_id = update.message.chat_id, text = get_value_temp(2))
 
 def die(updater):
-         updater.start_polling()
-         exit(0)
+        updater.stop()
+        exit(0)
 
 def main():
         updater = Updater(token, use_context=True)
