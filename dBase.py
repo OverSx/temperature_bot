@@ -5,8 +5,8 @@ import datetime
 def DataBase():
     con = sqlite3.connect('Temperature.db')
     cursor = con.cursor()
-    cursor.execute('''CREATE TABLE Sensor_1 (ID, Datetime, Value)''')
-    cursor.execute('''CREATE TABLE Sensor_2 (ID, Datetime, Value)''')
+    cursor.execute('''CREATE TABLE if not exists Sensor_1 (ID, Datetime, Value)''')
+    cursor.execute('''CREATE TABLE if not exists Sensor_2 (ID, Datetime, Value)''')
     con.commit()
     con.close()
 
