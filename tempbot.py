@@ -1,5 +1,8 @@
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
+from telegram.ext import MessageHandler
+from telegram.ext import TypeHandler
+from telegram.ext import Filters
 import serial
 import json 
 import datetime
@@ -45,6 +48,10 @@ def sensor_1(update, context):
 def sensor_2(update, context):
         context.bot.send_message(chat_id = update.message.chat_id, text = get_value_temp(2))
 
+def common_message(update, context):
+        context.bot.send_message(chat_id = update.message.chat_id, text = "Ok, for sure we'll call back")
+
+
 def die(updater):
         updater.stop()
         exit(0)
@@ -56,6 +63,7 @@ def main():
         dispatcher.add_handler(CommandHandler('start', start))
         dispatcher.add_handler(CommandHandler('sensor1', sensor_1))
         dispatcher.add_handler(CommandHandler('sensor2', sensor_2))
+        dispatcher.add_handler(MessageHandler(Filters.text, common_message))
 
 
         while True:
